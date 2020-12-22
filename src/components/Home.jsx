@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import ReactPlayer from 'react-player'
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckCircleRounded from '@material-ui/icons/CheckCircleRounded';
@@ -45,12 +44,16 @@ import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: 800
+        width: 750,
+        margin: 'auto'
     },
     media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
+        height: '100%',
+        width: '100%',
         objectFit: 'cover'
+        // height: 0,
+        // paddingTop: '56.25%', // 16:9
+        // objectFit: 'cover'
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -98,11 +101,13 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 1
     },
     inputImageRoot: {
-        position: 'relative'
+        position: 'relative',
+        maxHeight: 525
     },
     inputImageMedia: {
-        minHeight: 0,
-        paddingTop: '56.25%',
+        height: '100%',
+        width: '100%',
+        objectFit: 'cover',
         zIndex:1
     },
     cancelBtn: {
@@ -307,11 +312,8 @@ const Home = () => {
 
     return (
             <Grid container spacing={3} direction="column" justify="center" alignItems="center">
-                <Grid item xs={6}>
-                    <Card style={{
-                        width: '47vw',
-                        maxWidth: '47vw'
-                    }}>
+                <Grid className={classes.root} item xs={6}>
+                    <Card>
                         <CardHeader
                             avatar={
                                 user &&
@@ -381,8 +383,8 @@ const Home = () => {
                                                 multiline
                                                 fullWidth
                                                 style={{fontSize: 20, marginTop: 10}}
-                                                rows={7}
-                                                rowsMax={12}
+                                                rows={6}
+                                                rowsMax={6}
                                                 placeholder={`What's on your mind, ${user ? user.displayName : ''}?`}
                                                 value={postBody}
                                                 onChange={(e) => setPostBody(e.target.value)}
@@ -395,6 +397,7 @@ const Home = () => {
                                                             <Cancel style={{color: 'white'}} />
                                                         </IconButton>
                                                         <CardMedia
+                                                            component="img"
                                                             className={classes.inputImageMedia}
                                                             image={currentImageUrl}
                                                         />
@@ -515,8 +518,8 @@ const Home = () => {
                 </Grid>
                 {
                     posts && posts.map(post => 
-                        <Grid item xs={6} key={post.id}>
-                            <Card className={classes.root}>
+                        <Grid className={classes.root} item xs={6} key={post.id}>
+                            <Card>
                                 <CardHeader
                                     avatar={
                                     <Avatar aria-label="avatar" className={classes.avatar} src={post.postedBy.avatar} />
@@ -528,13 +531,18 @@ const Home = () => {
                                             <MoreVertIcon />
                                         </IconButton>
                                     }
-                                    title={post.postedBy.username}
+                                    title={
+                                        <Typography variant="subtitle1">
+                                            {post.postedBy.username}
+                                        </Typography>
+                                    }
                                     subheader={post.createdAt ? formatDate(post.createdAt.toDate()) : ''}
                                     style={{textAlign: 'left'}}
                                 />
                                 {
                                     post.imageUrl && 
                                     <CardMedia
+                                        component="img"
                                         className={classes.media}
                                         image={post.imageUrl}
                                     />
